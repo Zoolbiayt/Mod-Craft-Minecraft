@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>کلاینت مود کرفت</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Tahoma,Arial,sans-serif;
+    background:#07110b;
+    color:#fff;
+}
+header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(5,15,9,.96);
+    border-bottom:1px solid #214d2d;
+    padding:15px;
+}
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    color:#62ff82;
+    text-align:center;
+    margin-bottom:12px;
+}
+.subtitle{
+    text-align:center;
+    color:#9eb5a4;
+    font-size:12px;
+    margin-bottom:14px;
+}
+.search{
+    width:100%;
+    border:none;
+    outline:none;
+    border-radius:14px;
+    padding:13px;
+    background:#101e15;
+    color:white;
+    font-size:15px;
+}
+.tabs{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+.tab{
+    flex:1;
+    padding:12px 5px;
+    border:none;
+    border-radius:12px;
+    color:#fff;
+    background:#132219;
+    font-weight:bold;
+}
+.tab.active{
+    background:#2b9d49;
+}
+.container{
+    padding:15px;
+    max-width:900px;
+    margin:auto;
+}
+.info{
+    background:linear-gradient(135deg,#102b18,#0c1710);
+    border:1px solid #245f34;
+    border-radius:18px;
+    padding:15px;
+    margin-bottom:15px;
+}
+.info h2{
+    margin:0 0 8px;
+    color:#7cff98;
+}
+.info p{
+    margin:0;
+    color:#b6c7bb;
+    font-size:13px;
+    line-height:1.8;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+.card{
+    background:#0d1911;
+    border:1px solid #1e3c27;
+    border-radius:17px;
+    padding:13px;
+    min-height:190px;
+    display:flex;
+    flex-direction:column;
+}
+.icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    background:#173820;
+    margin-bottom:10px;
+}
+.name{
+    font-weight:bold;
+    font-size:15px;
+    margin-bottom:6px;
+}
+.desc{
+    color:#9cad9f;
+    font-size:11px;
+    line-height:1.7;
+    flex:1;
+}
+.badge{
+    display:inline-block;
+    width:max-content;
+    margin:8px 0;
+    padding:4px 7px;
+    border-radius:7px;
+    font-size:9px;
+    background:#162c1d;
+    color:#70ff91;
+}
+.download{
+    border:0;
+    border-radius:11px;
+    padding:10px;
+    background:#2b9d49;
+    color:white;
+    font-weight:bold;
+    text-decoration:none;
+    text-align:center;
+    font-size:12px;
+}
+.download:active{
+    transform:scale(.97);
+}
+.empty{
+    text-align:center;
+    color:#9aaa9e;
+    padding:40px 10px;
+    display:none;
+}
+footer{
+    text-align:center;
+    color:#66766b;
+    font-size:11px;
+    padding:25px 10px;
+}
+@media(max-width:420px){
+    .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">⛏️ کلاینت مود کرفت</div>
+    <div class="subtitle">مرکز مودها و Add-on های Minecraft</div>
+
+    <input
+        id="search"
+        class="search"
+        placeholder="🔎 جستجوی مود..."
+        oninput="render()"
+    >
+
+    <div class="tabs">
+        <button class="tab active" id="javaTab" onclick="setMode('java')">
+            🟩 Java
+        </button>
+        <button class="tab" id="bedrockTab" onclick="setMode('bedrock')">
+            🟦 Bedrock
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+<div class="info">
+    <h2 id="title">مودهای Minecraft Java</h2>
+    <p id="description">
+        مود موردنظر را پیدا کن و روی «صفحه دانلود» بزن.
+        لینک‌ها به منابع واقعی مودها هدایت می‌شوند.
+    </p>
+</div>
+
+<div id="grid" class="grid"></div>
+
+<div id="empty" class="empty">
+    😕 مودی با این نام پیدا نشد.
+</div>
+
+</div>
+
+<footer>
+    کلاینت مود کرفت • Minecraft Mod Client
+</footer>
+
+<script>
+
+/* =========================
+   JAVA MODS
+   ========================= */
+
+const javaMods = [
+
+["Sodium","sodium","⚡","افزایش عملکرد و FPS","Modrinth"],
+["Lithium","lithium","🚀","بهینه‌سازی منطق بازی","Modrinth"],
+["Iris Shaders","iris","🌈","پشتیبانی از Shader","Modrinth"],
+["Entity Culling","entityculling","👁️","بهینه‌سازی رندر موجودات","Modrinth"],
+["ImmediatelyFast","immediatelyfast","⚡","بهبود رندر و رابط بازی","Modrinth"],
+["FerriteCore","ferrite-core","🧠","کاهش مصرف RAM","Modrinth"],
+["ModernFix","modernfix","🔧","بهینه‌سازی و رفع مشکلات","Modrinth"],
+["Dynamic FPS","dynamic-fps","📈","کاهش مصرف منابع در پس‌زمینه","Modrinth"],
+["Mod Menu","modmenu","📋","مدیریت مودهای نصب‌شده","Modrinth"],
+["Fabric API","fabric-api","🧩","کتابخانه موردنیاز بسیاری از مودها","Modrinth"],
+
+["AppleSkin","appleskin","🍎","نمایش اطلاعات غذا و گرسنگی","Modrinth"],
+["Mouse Tweaks","mouse-tweaks","🖱️","کنترل بهتر اینونتوری","Modrinth"],
+["Jade","jade","🔍","نمایش اطلاعات بلاک‌ها و موجودات","Modrinth"],
+["Just Enough Items","jei","📖","نمایش آیتم‌ها و Recipeها","Modrinth"],
+["Xaero's Minimap","xaeros-minimap","🗺️","مینی‌مپ و نقاط مهم","Modrinth"],
+["Xaero's World Map","xaeros-world-map","🌍","نقشه کامل جهان","Modrinth"],
+["Inventory Profiles Next","inventory-profiles-next","🎒","مدیریت حرفه‌ای اینونتوری","Modrinth"],
+["Shulker Box Tooltip","shulkerboxtooltip","📦","دیدن محتوای Shulker","Modrinth"],
+["BetterF3","betterf3","🖥️","بهبود صفحه F3","Modrinth"],
+["Better Advancements","better-advancements","🏆","رابط بهتر Advancementها","Modrinth"],
+
+["Enchantment Descriptions","enchantment-descriptions","✨","توضیح Enchantmentها","Modrinth"],
+["Legendary Tooltips","legendary-tooltips","💎","Tooltip زیباتر برای آیتم‌ها","Modrinth"],
+["Not Enough Animations","not-enough-animations","🕺","انیمیشن‌های بیشتر بازیکن","Modrinth"],
+["Better Third Person","better-third-person","🎥","کنترل بهتر نمای سوم‌شخص","Modrinth"],
+["Zoomify","zoomify","🔭","قابلیت Zoom","Modrinth"],
+["Chat Heads","chat-heads","💬","نمایش آواتار در چت","Modrinth"],
+["Better Ping Display","better-ping-display","📡","نمایش بهتر Ping","Modrinth"],
+["No Chat Reports","no-chat-reports","🛡️","تنظیمات بیشتر برای Chat Reports","Modrinth"],
+["FastQuit","fastquit","🚪","خروج سریع‌تر از دنیا","Modrinth"],
+["More Culling","moreculling","🌲","بهینه‌سازی Culling","Modrinth"],
+
+["Starlight","starlight","🌟","بهینه‌سازی نورپردازی","Modrinth"],
+["Krypton","krypton","🌐","بهینه‌سازی شبکه","Modrinth"],
+["Noisium","noisium","🗺️","بهینه‌سازی تولید جهان","Modrinth"],
+["C2ME","c2me-fabric","🧵","بهینه‌سازی Chunkها","Modrinth"],
+["Sodium Extra","sodium-extra","⚙️","تنظیمات بیشتر Sodium","Modrinth"],
+["Reese's Sodium Options","reeses-sodium-options","🎛️","رابط بهتر تنظیمات Sodium","Modrinth"],
+["Yet Another Config Lib","yacl","⚙️","کتابخانه تنظیمات مودها","Modrinth"],
+["Cloth Config API","cloth-config","📚","کتابخانه تنظیمات","Modrinth"],
+["Architectury API","architectury-api","🏗️","کتابخانه سازگاری مودها","Modrinth"],
+["Fabric Language Kotlin","fabric-language-kotlin","🔤","پشتیبانی Kotlin","Modrinth"],
+
+["Nature's Compass","natures-compass","🧭","پیدا کردن Biomeها","Modrinth"],
+["Explorer's Compass","explorers-compass","🧭","پیدا کردن ساختارها","Modrinth"],
+["Waystones","waystones","🌀","سیستم جابه‌جایی بین نقاط","Modrinth"],
+["Carry On","carry-on","📦","حمل بعضی موجودات و بلوک‌ها","Modrinth"],
+["Comforts","comforts","🛏️","Sleeping Bag و Hammock","Modrinth"],
+["Quark","quark","🧱","افزونه‌های متنوع Vanilla+","Modrinth"],
+["Botania","botania","🌺","سیستم جادویی و گیاهی","Modrinth"],
+["Create","create","⚙️","ماشین‌آلات و سیستم‌های مکانیکی","Modrinth"],
+["Terralith","terralith","🏔️","تغییر و تنوع بیشتر جهان","Modrinth"],
+["Dungeons and Taverns","dungeons-and-taverns","🏰","ساختارها و Dungeonهای بیشتر","Modrinth"]
+
+];
+
+
+/* =========================
+   BEDROCK ADDONS
+   ========================= */
+
+const bedrockMods = [
+
+["Better on Bedrock","Better on Bedrock","🌎","گسترش تجربه Bedrock","CurseForge"],
+["Effortless Building","Effortless Building","🏗️","ساخت سریع سازه‌ها","CurseForge"],
+["System Dynamic Light","System Dynamic Light","🔦","نورپردازی پویا","CurseForge"],
+["Ore Boost","Ore Boost","⛏️","افزایش تنوع و مقدار Ore","CurseForge"],
+["Bedrock Essentials+","Bedrock Essentials+","🧰","مجموعه ابزارهای کاربردی","CurseForge"],
+["Raiyon's Java Combat","Raiyon's Java Combat","⚔️","سیستم مبارزه نزدیک به Java","CurseForge"],
+["Multiplayer Waypoint System!","Multiplayer Waypoint System!","📍","Waypoint برای بازی چندنفره","CurseForge"],
+["Holograms on dropped items!","Holograms on dropped items!","🏷️","نمایش نام آیتم‌های افتاده","CurseForge"],
+["More Body Actions + Pickup & Carry!","More Body Actions + Pickup & Carry!","🧍","حرکت‌ها و تعاملات بیشتر","CurseForge"],
+["Pickup & Carry!","Pickup & Carry!","📦","حمل بعضی موجودات و بلوک‌ها","CurseForge"],
+
+["Edds' VeinCapitator","Edds' VeinCapitator","⛏️","Vein Miner و Tree Capitator","CurseForge"],
+["SERP Pokédrock","SERP Pokédrock","🐾","سیستم موجودات و ماجراجویی","CurseForge"],
+["Silk Touch Spawners!","Silk Touch Spawners!","🧱","قابلیت جابه‌جایی Spawner","CurseForge"],
+["Random Drops","Random Drops","🎲","Dropهای تصادفی","CurseForge"],
+["Infinite Villager Trades","Infinite Villager Trades","🧑‍🌾","تغییر سیستم Trade روستایی‌ها","CurseForge"],
+["Construct","Construct","🏗️","ابزار ساخت و طراحی","CurseForge"],
+["Rise and Survive","Rise and Survive","🧟","چالش Survival و موجودات بیشتر","CurseForge"],
+["Verity BE","Verity BE (Official)","🤖","موجود و دستیار داخل بازی","CurseForge"],
+["Verity","Verity - Bedrock Edition","🤖","افزودنی تعاملی","CurseForge"],
+["Horror Expansion","Horror Expansion","👻","محتوای ترسناک برای دنیا","CurseForge"],
+
+["Dynamic Trees","Dynamic Trees","🌳","تغییر سیستم رشد درختان","CurseForge"],
+["Better Farming","Better Farming","🌾","امکانات بیشتر کشاورزی","CurseForge"],
+["Better Villagers","Better Villagers","🧑‍🌾","بهبود تعامل با Villagerها","CurseForge"],
+["More Structures","More Structures","🏰","ساختارهای بیشتر در دنیا","CurseForge"],
+["Biome Expansion","Biome Expansion","🌲","تنوع بیشتر محیط‌ها","CurseForge"],
+["Extra Animals","Extra Animals","🐼","موجودات و حیوانات بیشتر","CurseForge"],
+["Furniture Addon","Furniture Addon","🪑","مبلمان و دکوراسیون","CurseForge"],
+["Backpack Addon","Backpack Addon","🎒","افزودن Backpack","CurseForge"],
+["Gravestone Addon","Gravestone Addon","🪦","سیستم نگهداری آیتم‌ها","CurseForge"],
+["Tree Capitator","Tree Capitator","🌲","شکستن سریع درخت‌ها","CurseForge"],
+
+["Vein Miner","Vein Miner","⛏️","استخراج چند بلوک همزمان","CurseForge"],
+["More Ores","More Ores","💎","Oreهای بیشتر","CurseForge"],
+["Lightweight Shaders","Lightweight Shaders","🌅","بهبود ظاهر بازی","CurseForge"],
+["Better Sky","Better Sky","☁️","آسمان زیباتر","CurseForge"],
+["Better Leaves","Better Leaves","🍃","ظاهر بهتر برگ‌ها","CurseForge"],
+["Connected Glass","Connected Glass","🪟","شیشه‌های متصل","CurseForge"],
+["Furniture Expansion","Furniture Expansion","🛋️","آیتم‌های دکوراتیو بیشتر","CurseForge"],
+["Mob Expansion","Mob Expansion","🐺","تنوع بیشتر موجودات","CurseForge"],
+["Food Expansion","Food Expansion","🍔","غذاهای بیشتر","CurseForge"],
+["Cave Expansion","Cave Expansion","🕳️","محتوای بیشتر برای غارها","CurseForge"],
+
+["Ocean Expansion","Ocean Expansion","🌊","محتوای بیشتر برای اقیانوس","CurseForge"],
+["Nether Expansion","Nether Expansion","🔥","محتوای بیشتر برای Nether","CurseForge"],
+["End Expansion","End Expansion","🌌","محتوای بیشتر برای End","CurseForge"],
+["Village Expansion","Village Expansion","🏘️","دهکده‌های متنوع‌تر","CurseForge"],
+["Animal AI Expansion","Animal AI Expansion","🐑","رفتار متنوع‌تر حیوانات","CurseForge"],
+["Crafting Expansion","Crafting Expansion","🛠️","Recipeهای بیشتر","CurseForge"],
+["Storage Expansion","Storage Expansion","📦","راهکارهای بیشتر برای Storage","CurseForge"],
+["Survival Expansion","Survival Expansion","❤️","امکانات بیشتر Survival","CurseForge"],
+["Adventure Expansion","Adventure Expansion","🗺️","محتوای بیشتر برای Adventure","CurseForge"],
+["Vanilla Plus Addon","Vanilla Plus Addon","✨","بهبودهای مختلف برای Vanilla","CurseForge"]
+
+];
+
+
+/* =========================
+   STATE
+   ========================= */
+
+let mode = "java";
+
+
+function setMode(newMode){
+
+    mode = newMode;
+
+    document.getElementById("javaTab")
+        .classList.toggle("active",mode==="java");
+
+    document.getElementById("bedrockTab")
+        .classList.toggle("active",mode==="bedrock");
+
+    if(mode==="java"){
+        document.getElementById("title").textContent =
+            "مودهای Minecraft Java";
+
+        document.getElementById("description").textContent =
+            "مودهای Java را جستجو کن و برای دریافت فایل یا نسخه مناسب وارد صفحه واقعی مود شو.";
+    }else{
+        document.getElementById("title").textContent =
+            "Add-on های Minecraft Bedrock";
+
+        document.getElementById("description").textContent =
+            "Add-on های Bedrock را پیدا کن و برای دریافت نسخه واقعی وارد صفحه پروژه شو.";
+    }
+
+    document.getElementById("search").value="";
+
+    render();
+}
+
+
+/* =========================
+   URL GENERATOR
+   ========================= */
+
+function getURL(mod){
+
+    const name = mod[0];
+    const slug = mod[1];
+    const source = mod[4];
+
+    if(source === "Modrinth"){
+
+        return "https://modrinth.com/mod/" + slug;
+
+    }
+
+    if(source === "CurseForge"){
+
+        return "https://www.curseforge.com/minecraft-bedrock/search?class=addons&search=" +
+            encodeURIComponent(name);
+
+    }
+
+    return "#";
+}
+
+
+/* =========================
+   RENDER
+   ========================= */
+
+function render(){
+
+    const grid = document.getElementById("grid");
+    const empty = document.getElementById("empty");
+
+    const search =
+        document.getElementById("search")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const list =
+        mode === "java"
+        ? javaMods
+        : bedrockMods;
+
+    grid.innerHTML="";
+
+    let count=0;
+
+    list.forEach(mod=>{
+
+        const name = mod[0];
+        const desc = mod[3];
+        const source = mod[4];
+
+        if(
+            search &&
+            !name.toLowerCase().includes(search) &&
+            !desc.toLowerCase().includes(search)
+        ){
+            return;
+        }
+
+        count++;
+
+        const card=document.createElement("div");
+        card.className="card";
+
+        card.innerHTML=`
+
+            <div class="icon">${mod[2]}</div>
+
+            <div class="name">
+                ${escapeHTML(name)}
+            </div>
+
+            <div class="desc">
+                ${escapeHTML(desc)}
+            </div>
+
+            <div class="badge">
+                ${mode==="java" ? "JAVA" : "BEDROCK"}
+                •
+                ${source}
+            </div>
+
+            <a
+                class="download"
+                href="${getURL(mod)}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ⬇️ صفحه دانلود
+            </a>
+        `;
+
+        grid.appendChild(card);
+    });
+
+    empty.style.display =
+        count === 0
+        ? "block"
+        : "none";
+}
+
+
+/* =========================
+   SECURITY
+   ========================= */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* START */
+
+render();
+
+</script>
+
+</body>
+</html>
